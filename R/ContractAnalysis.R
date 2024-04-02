@@ -62,10 +62,10 @@ setMethod("ContractAnalysis", c(),
           )
 
 # ************************************************************************
-# ContractAnalysis( < > ) constructor to create/initialize a ContractAnalysis
+# initContractAnalysis(< >) creates/initializes a ContractAnalysis instance
 # ************************************************************************
-#' ContractAnalysis(analysisID, analysisDescription, enterpriseID, yieldCurve, 
-#'                  portfolio, currency, scenario, actusServerURL, Timeline )
+#' initContractAnalysis(analysisID, analysisDescription, enterpriseID, 
+#' yieldCurve, portfolio, currency, scenario, actusServerURL, Timeline )
 #'
 #'   This method is used to start a cashflow analysis of contract holdings of 
 #'   an enterprise. The user supplies information specifying the analysis to 
@@ -77,7 +77,7 @@ setMethod("ContractAnalysis", c(),
 #'   risk scenario is defined as a list of projected market interest and 
 #'   possibly stock price movements over time. Contract cashflow behavior is 
 #'   simulated by calling out to an identified ACTUS server.  Input Yield curve
-#'   data is used to set discounting and risk free groth factors used to 
+#'   data is used to set discounting and risk free growth factors used to 
 #'   determine a projected contract value at each defined future report time for
 #'   each contract in the enterprise portfolio. 
 #'   
@@ -111,10 +111,10 @@ setMethod("ContractAnalysis", c(),
 #'    installSampleData(mydatadir)
 #'    cdfn  <- "~/mydata/BondPortfolio.csv"
 #'    ptf   <-  samplePortfolio(cdfn)
-#'    serverURL <- "https://demo.actusfrf.org:8080/"
+#'    serverURL <- "http://ractus.ch:8080/" 
 #'    rxdfp <- paste0(mydatadir,"/UST5Y_fallingRates.csv")
 #'    rfx <- sampleReferenceIndex(rxdfp,"UST5Y_fallingRates", "YC_EA_AAA",100)
-#'    cfla <- ContractAnalysis( analysisID = "cfla001",
+#'    cfla <- initContractAnalysis( analysisID = "cfla001",
 #'                              analysisDescription = "this_analysis_descr",
 #'                              enterpriseID = "entp001",
 #'                              yieldCurve = YieldCurve(),
@@ -125,19 +125,18 @@ setMethod("ContractAnalysis", c(),
 #'                              timeline = Timeline())
 #'  }
 #'
-setMethod("ContractAnalysis", 
-          c ( analysisID = "character",
-              analysisDescription = "character",
-              enterpriseID = "character",
-              yieldCurve = "YieldCurve",
-              portfolio = "Portfolio",
-              currency = "character",
-              scenario = "list",
-              actusServerURL = "character",
-              timeline = "Timeline"
-              ), 
-           function (analysisID, analysisDescription, enterpriseID, yieldCurve, 
-                     portfolio, currency, scenario, actusServerURL, timeline) {
+initContractAnalysis <- function (
+              analysisID = " ",
+              analysisDescription = " ",
+              enterpriseID = " ",
+              yieldCurve = YieldCurve(),
+              portfolio = Portfolio(),
+              currency = " ",
+              scenario = list(),
+              actusServerURL = " ",
+              timeline = Timeline()
+              )
+ {
             cfla <- ContractAnalysis()
             cfla$analysisID <-          analysisID
             cfla$analysisDescription <- analysisDescription
@@ -149,7 +148,7 @@ setMethod("ContractAnalysis",
             cfla$actusServerURL <-      actusServerURL
             cfla$timeline <-            timeline
             return(cfla)
-          })
+          }
 
 # ************************************************************************
 # generateEvents(<ContractAnalysis> )
@@ -175,10 +174,10 @@ setMethod("ContractAnalysis",
 #'    installSampleData(mydatadir)
 #'    cdfn  <- "~/mydata/BondPortfolio.csv"
 #'    ptf   <-  samplePortfolio(cdfn)
-#'    serverURL <- "https://demo.actusfrf.org:8080/"
+#'    serverURL <- "http://ractus.ch:8080/"
 #'    rxdfp <- paste0(mydatadir,"/UST5Y_fallingRates.csv")
 #'    rfx <- sampleReferenceIndex(rxdfp,"UST5Y_fallingRates", "YC_EA_AAA",100)
-#'    cfla <- ContractAnalysis( analysisID = "cfla001", 
+#'    cfla <- initContractAnalysis( analysisID = "cfla001", 
 #'                              analysisDescription = "this_analysis_descr",
 #'                              enterpriseID = "entp001", yieldCurve = YieldCurve(),
 #'                              portfolio =  ptf, currency = "USD", 
@@ -202,10 +201,10 @@ setMethod (f = "generateEvents",
                 logmsg <- "Contract simulations were successful"
              }
              else {
-                cntan$cashFlowEvents <- NULL
+                cntan$cashflowEventsLoL <- list()
                 logmsg <- paste0("Contract simulation error. status_code= ",
-                                 simulationRsp$status_code,
-                                 "Error info= ", response_content$error)
+                                 simulationRsp$status_code)
+   #                              "Error info= ", content$error)
              }
              return(logmsg) 
            }
@@ -255,18 +254,18 @@ setGeneric("events2dfByPeriod",
 #'    ptf   <-  samplePortfolio(cdfn)
 #'    ptfsd <- unlist(lapply(ptf$contracts,function(x){return(x$contractTerms["statusDate"])}))
 #'    ptf2015 <- Portfolio(contractList = ptf$contracts[which(ptfsd == "2015-01-01")])
-#'    serverURL <- "https://demo.actusfrf.org:8080/"
+#'    serverURL <- "http://ractus.ch:8080/"
 #'    rxdfp <- paste0(mydatadir,"/UST5Y_fallingRates.csv")
 #'    rfx <- sampleReferenceIndex(rxdfp,"UST5Y_fallingRates", "YC_EA_AAA",100)
 #'    tl1 <- Timeline("2015-01-01",3,4,8)
-#'    cfla2015 <- ContractAnalysis( analysisID = "cfla001", 
+#'    cfla2015 <- initContractAnalysis( analysisID = "cfla001", 
 #'                              analysisDescription = "this_analysis_descr",
 #'                              enterpriseID = "entp001", yieldCurve = YieldCurve(),
 #'                              portfolio =  ptf2015, currency = "USD", 
 #'                              scenario = list(rfx), 
 #'                              actusServerURL = serverURL, 
 #'                              timeline = tl1)
-#'    logMsgs1  <- generateEvents(cfla = cfla2015)
+#'    logMsgs1  <- generateEvents(cntan = cfla2015)
 #'    logMsgs2  <- events2dfByPeriod(cfla= cfla2015)
 #' } 
 setMethod (f = "events2dfByPeriod", 
@@ -329,18 +328,18 @@ setGeneric("liquidityByPeriod2vec",
 #'    ptf   <-  samplePortfolio(cdfn)
 #'    ptfsd <- unlist(lapply(ptf$contracts,function(x){return(x$contractTerms["statusDate"])}))
 #'    ptf2015 <- Portfolio(contractList = ptf$contracts[which(ptfsd == "2015-01-01")])
-#'    serverURL <- "https://demo.actusfrf.org:8080/"
+#'    serverURL <-   "http://ractus.ch:8080/" 
 #'    rxdfp <- paste0(mydatadir,"/UST5Y_fallingRates.csv")
 #'    rfx <- sampleReferenceIndex(rxdfp,"UST5Y_fallingRates", "YC_EA_AAA",100)
 #'    tl1 <- Timeline("2015-01-01",3,4,8)
-#'    cfla2015 <- ContractAnalysis( analysisID = "cfla001", 
+#'    cfla2015 <- initContractAnalysis( analysisID = "cfla001", 
 #'                              analysisDescription = "this_analysis_descr",
 #'                              enterpriseID = "entp001", yieldCurve = YieldCurve(),
 #'                              portfolio =  ptf2015, currency = "USD", 
 #'                              scenario = list(rfx), 
 #'                              actusServerURL = serverURL, 
 #'                              timeline = tl1)
-#'    logMsgs1  <- generateEvents(cfla = cfla2015)
+#'    logMsgs1  <- generateEvents(cntan = cfla2015)
 #'    logMsgs2  <- events2dfByPeriod(cfla= cfla2015)
 #'    logMsgs3  <- liquidityByPeriod2vec(cfla= cfla2015)
 #' } 
@@ -405,18 +404,18 @@ setGeneric("lv2LiquidityReports",
 #'    ptf   <-  samplePortfolio(cdfn)
 #'    ptfsd <- unlist(lapply(ptf$contracts,function(x){return(x$contractTerms["statusDate"])}))
 #'    ptf2015 <- Portfolio(contractList = ptf$contracts[which(ptfsd == "2015-01-01")])
-#'    serverURL <- "https://demo.actusfrf.org:8080/"
+#'    serverURL <-  "http://ractus.ch:8080/" 
 #'    rxdfp <- paste0(mydatadir,"/UST5Y_fallingRates.csv")
 #'    rfx <- sampleReferenceIndex(rxdfp,"UST5Y_fallingRates", "YC_EA_AAA",100)
 #'    tl1 <- Timeline("2015-01-01",3,4,8)
-#'    cfla2015 <- ContractAnalysis( analysisID = "cfla001", 
+#'    cfla2015 <- initContractAnalysis( analysisID = "cfla001", 
 #'                              analysisDescription = "this_analysis_descr",
 #'                              enterpriseID = "entp001", yieldCurve = YieldCurve(),
 #'                              portfolio =  ptf2015, currency = "USD", 
 #'                              scenario = list(rfx), 
 #'                              actusServerURL = serverURL, 
 #'                              timeline = tl1)
-#'    logMsgs1  <- generateEvents(cfla = cfla2015)
+#'    logMsgs1  <- generateEvents(cntan = cfla2015)
 #'    logMsgs2  <- events2dfByPeriod(cfla= cfla2015)
 #'    logMsgs3  <- liquidityByPeriod2vec(cfla= cfla2015)
 #'    lofMsgs4  <- lv2LiquidityReports(cfla= cfla2015)
@@ -496,20 +495,20 @@ setGeneric("eventsdf2incomeReports",
 #'    ptf   <-  samplePortfolio(cdfn)
 #'    ptfsd <- unlist(lapply(ptf$contracts,function(x){return(x$contractTerms["statusDate"])}))
 #'    ptf2015 <- Portfolio(contractList = ptf$contracts[which(ptfsd == "2015-01-01")])
-#'    serverURL <- "https://demo.actusfrf.org:8080/"
+#'    serverURL <- "http://ractus.ch:8080/"                                                           
 #'    rxdfp <- paste0(mydatadir,"/UST5Y_fallingRates.csv")
 #'    rfx <- sampleReferenceIndex(rxdfp,"UST5Y_fallingRates", "YC_EA_AAA",100)
 #'    tl1 <- Timeline("2015-01-01",3,4,8)
-#'    cfla2015 <- ContractAnalysis( analysisID = "cfla001", 
+#'    cfla2015 <- initContractAnalysis( analysisID = "cfla001", 
 #'                              analysisDescription = "this_analysis_descr",
 #'                              enterpriseID = "entp001", yieldCurve = YieldCurve(),
 #'                              portfolio =  ptf2015, currency = "USD", 
 #'                              scenario = list(rfx), 
 #'                              actusServerURL = serverURL, 
 #'                              timeline = tl1)
-#'    logMsgs1  <- generateEvents(cfla = cfla2015)
+#'    logMsgs1  <- generateEvents(cntan = cfla2015)
 #'    logMsgs2  <- events2dfByPeriod(cfla= cfla2015)
-#'    logMsgs5  <- eventsdf2incomeReports(cfla= cflas2015)
+#'    logMsgs5  <- eventsdf2incomeReports(cfla= cfla2015)
 #' } 
 #'      
 setMethod(f = "eventsdf2incomeReports",
@@ -682,18 +681,18 @@ setMethod(f = "nominalValueReports",
 #'    ptf   <-  samplePortfolio(cdfn)
 #'    ptfsd <- unlist(lapply(ptf$contracts,function(x){return(x$contractTerms["statusDate"])}))
 #'    ptf2015 <- Portfolio(contractList = ptf$contracts[which(ptfsd == "2015-01-01")])
-#'    serverURL <- "https://demo.actusfrf.org:8080/"
+#'    serverURL <-  "http://ractus.ch:8080/" 
 #'    rxdfp <- paste0(mydatadir,"/UST5Y_fallingRates.csv")
 #'    rfx <- sampleReferenceIndex(rxdfp,"UST5Y_fallingRates", "YC_EA_AAA",100)
 #'    tl1 <- Timeline("2015-01-01",3,4,8)
-#'    cfla2015 <- ContractAnalysis( analysisID = "cfla001", 
+#'    cfla2015 <- initContractAnalysis( analysisID = "cfla001", 
 #'                              analysisDescription = "this_analysis_descr",
 #'                              enterpriseID = "entp001", yieldCurve = YieldCurve(),
 #'                              portfolio =  ptf2015, currency = "USD", 
 #'                              scenario = list(rfx), 
 #'                              actusServerURL = serverURL, 
 #'                              timeline = tl1)
-#'    logMsgs1  <- generateEvents(cfla = cfla2015)
+#'    logMsgs1  <- generateEvents(cntan = cfla2015)
 #'    logMsgs2  <- events2dfByPeriod(cfla= cfla2015)
 #'    logMsgs6  <- nominalValueReports(cntan= cfla2015)
 #' } 

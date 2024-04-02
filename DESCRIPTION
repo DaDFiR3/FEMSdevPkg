@@ -1,8 +1,9 @@
 Package: FEMSdevPkg
 Type: Package
 Title: Provides an API to ACTUS cashflow Generation, liquidity and income plots
-Version: 0.0.9
-Author: Francis Parr, Donat Maier, Nils Bundi 
+Version: 0.0.10
+Author: Francis Parr, Donat Maier, Nils Bundi, Henriette Breymann, Gian-Andrin
+        Tommasini
 Maintainer: Francis Parr <fnparr@gmail.com>
 Description: Exports a samplePortfolio( ) which reads designated csv files 
     with Bond portfolio and risk factor data, then creates and returns a 
@@ -29,6 +30,7 @@ Description: Exports a samplePortfolio( ) which reads designated csv files
     aslo available in the installSampledata directory. 
 License: GPL ( >=2)
 Imports:
+      data.tree,
       fmdates,
       ggplot2,
       httr,
@@ -37,10 +39,14 @@ Imports:
       methods,
       shiny,
       shinythemes,
+      TAF,
       timeDate,
       timeSeries,
+      yaml,
       zoo
-ImportFrom: methods new      
+ImportFrom: 
+     methods new
+     stats approx
 Encoding: UTF-8
 LazyData: true
 Collate: 

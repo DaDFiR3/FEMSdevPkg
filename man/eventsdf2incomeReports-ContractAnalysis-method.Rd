@@ -52,20 +52,20 @@ This method generates an incomeReport (vector) for each contract using the
    ptf   <-  samplePortfolio(cdfn)
    ptfsd <- unlist(lapply(ptf$contracts,function(x){return(x$contractTerms["statusDate"])}))
    ptf2015 <- Portfolio(contractList = ptf$contracts[which(ptfsd == "2015-01-01")])
-   serverURL <- "https://demo.actusfrf.org:8080/"
+   serverURL <- "http://ractus.ch:8080/"                                                           
    rxdfp <- paste0(mydatadir,"/UST5Y_fallingRates.csv")
    rfx <- sampleReferenceIndex(rxdfp,"UST5Y_fallingRates", "YC_EA_AAA",100)
    tl1 <- Timeline("2015-01-01",3,4,8)
-   cfla2015 <- ContractAnalysis( analysisID = "cfla001", 
+   cfla2015 <- initContractAnalysis( analysisID = "cfla001", 
                              analysisDescription = "this_analysis_descr",
                              enterpriseID = "entp001", yieldCurve = YieldCurve(),
                              portfolio =  ptf2015, currency = "USD", 
                              scenario = list(rfx), 
                              actusServerURL = serverURL, 
                              timeline = tl1)
-   logMsgs1  <- generateEvents(cfla = cfla2015)
+   logMsgs1  <- generateEvents(cntan = cfla2015)
    logMsgs2  <- events2dfByPeriod(cfla= cfla2015)
-   logMsgs5  <- eventsdf2incomeReports(cfla= cflas2015)
+   logMsgs5  <- eventsdf2incomeReports(cfla= cfla2015)
 } 
      
 }

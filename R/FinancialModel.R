@@ -79,14 +79,12 @@ setMethod("FinancialModel", c(),
 #' 
 #' @return  FinancialModel S4 object: ready for analyses to be added 
 #' @export
-#' @examples {Hold off on examples until tested and sample Enterprise portfolio added}
 #'
-setMethod("FinancialModel", 
-c ( fmID = "character", fmDescr = "character", entprID = "character",
-    accounts = "Node", ptf = "Portfolio", curr = "character",
-    timeline = "Timeline", serverURL = "character"
-    ),
-function (fmID, fmDescr, entprID, accounts, ptf, curr, timeline, serverURL) {
+initFinancialModel <- function( 
+    fmID = " ", fmDescr = " ", entprID = " ",
+    accounts = Node(), ptf = Portfolio(), curr = " ",
+    timeline = Timeline(), serverURL = " "
+    ) {
   fm <- FinancialModel()
   fm$financialModelID           <- fmID
   fm$financialModelDescription  <- fmDescr
@@ -95,8 +93,7 @@ function (fmID, fmDescr, entprID, accounts, ptf, curr, timeline, serverURL) {
   fm$portfolio                  <- ptf
   fm$currency                   <- curr
   fm$timeline                   <- timeline
-  fm$ACTUSserverURL             <- serverURL
+  fm$serverURL             <- serverURL
   return (fm)
   }
-)
   
