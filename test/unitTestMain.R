@@ -308,7 +308,7 @@ lam1 <- lam("2015-12-31", maturity = "5 years", nominal = 1000,
             rateResetFreq = "Fixed rate")
 ptf1 <- Portfolio(lam1)
 tl1 <- Timeline("2015-01-01",3,8,16)
-cfla1 <- ContractAnalysis( analysisID = "cfla001",
+cfla1 <- initContractAnalysis( analysisID = "cfla001",
                            analysisDescription = "this_analysis_descr",
                            enterpriseID = "entp001",
                            yieldCurve = YieldCurve(),
