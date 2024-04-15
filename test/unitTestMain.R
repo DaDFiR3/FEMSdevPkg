@@ -341,7 +341,7 @@ installSampleData(mydatadir)
 rxdfp <- paste0(mydatadir,"/UST5Y_risingRates.csv")
 rfx <- sampleReferenceIndex(rxdfp,"UST5Y_risingRates", "YC_EA_AAA",100)
 tl1 <- Timeline("2020-01-01",3,8,16)
-cfla1 <- ContractAnalysis( analysisID = "cfla001",
+cfla1 <- initContractAnalysis( analysisID = "cfla001",
                            analysisDescription = "this_analysis_descr",
                            enterpriseID = "entp001",
                            yieldCurve = YieldCurve(),
@@ -378,7 +378,7 @@ installSampleData(mydatadir)
 rxdfp <- paste0(mydatadir,"/UST5Y_risingRates.csv")
 rfx <- sampleReferenceIndex(rxdfp,"UST5Y_risingRates", "YC_EA_AAA",100)
 tl1 <- Timeline("2020-01-01",3,8,16)
-cfla1 <- ContractAnalysis( analysisID = "cfla001",
+cfla1 <- initContractAnalysis( analysisID = "cfla001",
                            analysisDescription = "this_analysis_descr",
                            enterpriseID = "entp001",
                            yieldCurve = YieldCurve(),
